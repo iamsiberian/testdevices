@@ -32,3 +32,6 @@ HELP.md
 .gz
 mvnw
 mwnw.cmd
+
+### CheckStyle ###
+checkstyle.xml
