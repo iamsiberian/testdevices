@@ -11,7 +11,7 @@
     <groupId>net.thumbtack</groupId>
     <artifactId>testdevices</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <name>testdevices</name>
     <description>Project for managing test devices</description>
 
