@@ -23,7 +23,7 @@ public class DevicesServiceTest {
         deviceDao = mock(DeviceDao.class);
         devicesServiceImpl = spy(new DevicesServiceImpl(deviceDao));
         request = new DeviceRequest(
-                DeviceType.PHONE,
+                DeviceType.PHONE.getDeviceType(),
                 "Apple",
                 "iPhone 1337",
                 "iOS",
