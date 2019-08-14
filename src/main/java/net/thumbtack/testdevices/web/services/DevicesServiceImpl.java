@@ -1,6 +1,7 @@
 package net.thumbtack.testdevices.web.services;
 
 import net.thumbtack.testdevices.core.models.Device;
+import net.thumbtack.testdevices.core.models.DeviceType;
 import net.thumbtack.testdevices.core.repositories.DeviceDao;
 import net.thumbtack.testdevices.dto.request.DeviceRequest;
 import net.thumbtack.testdevices.dto.response.DeviceResponse;
@@ -35,7 +36,7 @@ public class DevicesServiceImpl implements DevicesService {
 
     Device getDeviceFromDeviceRequest(final DeviceRequest request) {
         return new Device(
-                request.getType(),
+                DeviceType.valueOf(request.getType()),
                 request.getOwner(),
                 request.getModel(),
                 request.getOsType(),
