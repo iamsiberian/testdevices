@@ -4,8 +4,7 @@ import net.thumbtack.testdevices.core.models.Device;
 import net.thumbtack.testdevices.core.models.DeviceType;
 import net.thumbtack.testdevices.core.repositories.DeviceDao;
 import net.thumbtack.testdevices.dto.request.DeviceRequest;
-import net.thumbtack.testdevices.dto.response.DeviceResponse;
-import org.junit.Assert;
+import net.thumbtack.testdevices.web.converters.DeviceDtoToModelConverter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,13 +14,14 @@ public class DevicesServiceTest {
     private DeviceDao deviceDao;
     private DevicesServiceImpl devicesServiceImpl;
     private DeviceRequest request;
-    private DeviceResponse response;
     private Device device;
+    private DeviceDtoToModelConverter deviceDtoToModelConverter;
 
     @Before
     public void setup() {
         deviceDao = mock(DeviceDao.class);
-        devicesServiceImpl = spy(new DevicesServiceImpl(deviceDao));
+        deviceDtoToModelConverter = mock(DeviceDtoToModelConverter.class);
+        devicesServiceImpl = spy(new DevicesServiceImpl(deviceDao, deviceDtoToModelConverter));
         request = new DeviceRequest(
                 DeviceType.PHONE.getDeviceType(),
                 "Apple",
@@ -42,34 +42,11 @@ public class DevicesServiceTest {
     @Test
     public void testAddDevice() {
         when(deviceDao.insert(any(Device.class))).thenReturn(device);
+        when(deviceDtoToModelConverter.getDeviceFromDeviceRequest(request)).thenReturn(device);
 
         devicesServiceImpl.addDevice(request);
 
         verify(deviceDao, times(1)).insert(any(Device.class));
-    }
-
-    @Test
-    public void testGetDeviceResponseFromDevice() {
-        DeviceResponse expectedDeviceResponse = new DeviceResponse(
-                1L,
-                DeviceType.PHONE,
-                "Apple",
-                "iPhone 1337",
-                "iOS",
-                "abracadabra"
-        );
-        Assert.assertEquals(expectedDeviceResponse, devicesServiceImpl.getDeviceResponseFromDevice(device));
-    }
-
-    @Test
-    public void testGetDeviceFromDeviceRequest() {
-        Device expectedDevice = new Device(
-                DeviceType.PHONE,
-                "Apple",
-                "iPhone 1337",
-                "iOS",
-                "abracadabra"
-        );
-        Assert.assertEquals(expectedDevice, devicesServiceImpl.getDeviceFromDeviceRequest(request));
+        verify(deviceDtoToModelConverter, times(1)).getDeviceFromDeviceRequest(eq(request));
     }
 }
