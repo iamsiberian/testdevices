@@ -2,7 +2,10 @@ package net.thumbtack.testdevices.exceptions;
 
 public enum ErrorCode {
     USER_NOT_FOUND("email", "invalid email"),
-    WRONG_PASSWORD("password", "password mismatch")
+    WRONG_PASSWORD("password", "password mismatch"),
+    INVALID_AUTHORITY("authority", "authority not found"),
+    DUPLICATE_KEY_EXCEPTION("", ""),
+
     ;
 
     private String field;
