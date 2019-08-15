@@ -17,13 +17,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
 @ControllerAdvice
 public class GlobalRuntimeExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalRuntimeExceptionHandler.class);
     private static final int DUPLICATE_ERROR_FIELD_MYSQL = 5;
-    private static final int DUPLICATE_ERROR_FIELD_POSTGRES = 18;
     private static final String EMPTY_ERROR_FIELD = "";
     private static final String DEFAULT_VALIDATE_ERROR_CAUSE = "_IS_INVALID";
 
@@ -31,30 +29,13 @@ public class GlobalRuntimeExceptionHandler {
     public ResponseEntity handleDataIntegrityViolationException(final DataIntegrityViolationException ex) {
         LOGGER.error("Handle DataIntegrityViolationException {}", ex);
         List<Error> errorList = new ArrayList<>();
-        if (ex.getMessage() != null) {
-            String[] errorMessageArray = ex.getMessage().split(" ");
-            StringJoiner errorMessageResponse = new StringJoiner(" ");
-            String tempField = errorMessageArray[DUPLICATE_ERROR_FIELD_POSTGRES];
-            String field = tempField.substring(tempField.indexOf("(") + 1, tempField.indexOf(")"));
-            errorMessageResponse.add(field);
-            errorMessageResponse.add("already");
-            errorMessageResponse.add("exists");
-            errorList.add(
-                    new Error(
-                            ErrorCode.DUPLICATE_KEY_EXCEPTION.name(),
-                            field,
-                            errorMessageResponse.toString()
-                    )
-            );
-        } else {
-            errorList.add(
-                    new Error(
-                            ErrorCode.DUPLICATE_KEY_EXCEPTION.name(),
-                            EMPTY_ERROR_FIELD,
-                            EMPTY_ERROR_FIELD
-                    )
-            );
-        }
+        errorList.add(
+                new Error(
+                        ErrorCode.DUPLICATE_KEY_EXCEPTION.name(),
+                        EMPTY_ERROR_FIELD,
+                        ex.getMessage()
+                )
+        );
         return ResponseEntity.badRequest().body(new ErrorsResponse(errorList));
     }
 

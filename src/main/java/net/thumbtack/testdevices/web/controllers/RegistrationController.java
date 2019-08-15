@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = {"/api/registration"})
+@RequestMapping("/api/registration")
 public class RegistrationController {
     private static final Logger LOGGER = LoggerFactory.getLogger(RegistrationController.class);
     private UsersService usersService;
