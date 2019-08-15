@@ -94,8 +94,8 @@ public class RegistrationControllerMvcTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errorList", hasSize(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errorList[0].errorCode").value(ErrorCode.DUPLICATE_KEY_EXCEPTION.name()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errorList[0].field").value("email"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errorList[0].message").value("email already exists"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorList[0].field").value(""))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorList[0].message").isString())
         ;
     }
 

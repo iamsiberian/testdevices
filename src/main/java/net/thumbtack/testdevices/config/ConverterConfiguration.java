@@ -6,11 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class Converters {
+public class ConverterConfiguration {
     @Bean
     public DeviceDtoToModelConverter getDeviceDtoToModelConverter() {
         return new DeviceDtoToModelConverter();
-      
+    }
+
     @Bean
     public UserDtoToModelConverter getUserDtoToModelConverter() {
         return new UserDtoToModelConverter();
