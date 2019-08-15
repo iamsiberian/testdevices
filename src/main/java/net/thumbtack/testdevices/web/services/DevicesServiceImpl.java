@@ -4,6 +4,7 @@ import net.thumbtack.testdevices.core.models.Device;
 import net.thumbtack.testdevices.core.repositories.DeviceDao;
 import net.thumbtack.testdevices.dto.request.DeviceRequest;
 import net.thumbtack.testdevices.dto.response.DeviceResponse;
+import net.thumbtack.testdevices.dto.response.EmptyResponse;
 import net.thumbtack.testdevices.web.converters.DeviceDtoToModelConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,5 +27,12 @@ public class DevicesServiceImpl implements DevicesService {
         LOGGER.debug("DevicesServiceImpl addDevice: {}", request);
         Device device = deviceDtoToModelConverter.getDeviceFromDeviceRequest(request);
         return deviceDtoToModelConverter.getDeviceResponseFromDevice(deviceDao.insert(device));
+    }
+
+    @Override
+    public EmptyResponse deleteDevice(final long deviceId) {
+        LOGGER.debug("DevicesServiceImpl deleteDevice: {}", deviceId);
+        deviceDao.deleteById(deviceId);
+        return new EmptyResponse();
     }
 }
