@@ -1,5 +1,8 @@
 package net.thumbtack.testdevices.config;
 
+import net.thumbtack.testdevices.core.mappers.DeviceMapper;
+import net.thumbtack.testdevices.core.repositories.DeviceDao;
+import net.thumbtack.testdevices.core.repositories.DeviceDaoImpl;
 import net.thumbtack.testdevices.core.mappers.AuthoritiesMapper;
 import net.thumbtack.testdevices.core.mappers.UserMapper;
 import net.thumbtack.testdevices.core.mappers.UsersAuthoritiesRelationshipsMapper;
@@ -12,6 +15,12 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RepositoryConfig {
+    @Bean
+    public DeviceDao getDeviceDao(
+            final DeviceMapper deviceMapper
+    ) {
+        return new DeviceDaoImpl(deviceMapper);
+
     @Bean
     public AuthoritiesDao getAuthoritiesDao(
             final AuthoritiesMapper authoritiesMapper
