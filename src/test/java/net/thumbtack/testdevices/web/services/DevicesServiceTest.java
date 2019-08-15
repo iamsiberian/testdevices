@@ -49,4 +49,10 @@ public class DevicesServiceTest {
         verify(deviceDao, times(1)).insert(any(Device.class));
         verify(deviceDtoToModelConverter, times(1)).getDeviceFromDeviceRequest(eq(request));
     }
+
+    @Test
+    public void testDeleteDevice() {
+        devicesServiceImpl.deleteDevice(1L);
+        verify(deviceDao, times(1)).deleteById(eq(1L));
+    }
 }
