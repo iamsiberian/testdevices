@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.thumbtack.testdevices.core.models.DeviceType;
 import net.thumbtack.testdevices.dto.request.DeviceRequest;
 import net.thumbtack.testdevices.dto.response.DeviceResponse;
-import net.thumbtack.testdevices.dto.response.EmptyResponse;
 import net.thumbtack.testdevices.web.services.DevicesService;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,8 +18,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,14 +35,12 @@ public class DevicesControllerTest {
     private ObjectMapper objectMapper;
     private DeviceRequest deviceRequest;
     private DeviceResponse deviceResponse;
-    private EmptyResponse emptyResponse;
 
     @MockBean
     private DevicesService devicesService;
 
     @Before
     public void setup() {
-        emptyResponse = new EmptyResponse();
         objectMapper = new ObjectMapper();
         deviceRequest = new DeviceRequest(
                 DeviceType.PHONE.getDeviceType(),
@@ -336,11 +335,10 @@ public class DevicesControllerTest {
 
     @Test
     public void deleteDevice_byId() throws Exception {
-        given(devicesService.deleteDevice(anyLong())).willReturn(emptyResponse);
-
+        doNothing().when(devicesService).deleteDevice(1L);
         mvc.perform(delete("/api/devices/{id}", "1"))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$").exists())
         ;
+        verify(devicesService, times(1)).deleteDevice(1L);
     }
 }

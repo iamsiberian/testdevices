@@ -37,11 +37,10 @@ public class DevicesController {
     @DeleteMapping(path = "/devices/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity deleteDevice(final @PathVariable("id") long deviceId) {
         LOGGER.debug("DevicesController deleteDevice {}", deviceId);
+        devicesService.deleteDevice(deviceId);
         return
                 ResponseEntity
-                        .ok(devicesService.deleteDevice(deviceId));
+                        .ok()
+                        .build();
     }
-
-
-
 }
