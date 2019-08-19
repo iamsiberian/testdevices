@@ -5,4 +5,6 @@ import net.thumbtack.testdevices.dto.response.DeviceResponse;
 
 public interface DevicesService {
     DeviceResponse addDevice(DeviceRequest request);
+
+    void deleteDevice(long deviceId);
 }

@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,5 +32,15 @@ public class DevicesController {
                 ResponseEntity
                         .ok()
                         .body(devicesService.addDevice(request));
+    }
+
+    @DeleteMapping(path = "/devices/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity deleteDevice(final @PathVariable("id") long deviceId) {
+        LOGGER.debug("DevicesController deleteDevice {}", deviceId);
+        devicesService.deleteDevice(deviceId);
+        return
+                ResponseEntity
+                        .ok()
+                        .build();
     }
 }

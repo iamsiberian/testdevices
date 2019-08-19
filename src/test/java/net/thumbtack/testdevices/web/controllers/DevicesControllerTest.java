@@ -19,6 +19,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -327,5 +331,14 @@ public class DevicesControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.osType").value(deviceResponse.getOsType()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(deviceResponse.getDescription()))
         ;
+    }
+
+    @Test
+    public void deleteDevice_byId() throws Exception {
+        doNothing().when(devicesService).deleteDevice(1L);
+        mvc.perform(delete("/api/devices/{id}", "1"))
+                .andExpect(status().isOk())
+        ;
+        verify(devicesService, times(1)).deleteDevice(1L);
     }
 }

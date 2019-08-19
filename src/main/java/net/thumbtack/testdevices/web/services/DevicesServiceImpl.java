@@ -27,4 +27,10 @@ public class DevicesServiceImpl implements DevicesService {
         Device device = deviceDtoToModelConverter.getDeviceFromDeviceRequest(request);
         return deviceDtoToModelConverter.getDeviceResponseFromDevice(deviceDao.insert(device));
     }
+
+    @Override
+    public void deleteDevice(final long deviceId) {
+        LOGGER.debug("DevicesServiceImpl deleteDevice: {}", deviceId);
+        deviceDao.deleteById(deviceId);
+    }
 }
