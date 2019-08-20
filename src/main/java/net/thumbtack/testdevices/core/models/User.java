@@ -88,6 +88,26 @@ public class User {
     }
 
     public User(
+            final Long id,
+            final String firstName,
+            final String lastName,
+            final String phone,
+            final String email,
+            final String password,
+            final Authority authority
+    ) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.email = email;
+        this.password = password;
+        Set<Authority> authoritiesList = new HashSet<>();
+        authoritiesList.add(authority);
+        this.authorities = authoritiesList;
+    }
+
+    public User(
             final String firstName,
             final String lastName,
             final String phone,

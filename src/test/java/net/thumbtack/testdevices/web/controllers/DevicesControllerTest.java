@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(DevicesController.class)
-public class DevicesControllerTest {
+public class DevicesControllerTest extends BaseControllerTest {
     @Autowired
     private MockMvc mvc;
 
@@ -60,10 +60,23 @@ public class DevicesControllerTest {
     }
 
     @Test
+    public void testAddPhone_WithBadAuthority() throws Exception {
+        given(devicesService.addDevice(any(DeviceRequest.class))).willReturn(deviceResponse);
+
+        mvc.perform(post("/api/devices")
+                            .header("Authorization", getUserAuthToken())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(deviceRequest)))
+                .andExpect(status().isForbidden())
+        ;
+    }
+
+    @Test
     public void testAddPhone() throws Exception {
         given(devicesService.addDevice(any(DeviceRequest.class))).willReturn(deviceResponse);
 
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isOk())
@@ -89,6 +102,7 @@ public class DevicesControllerTest {
         given(devicesService.addDevice(any(DeviceRequest.class))).willReturn(deviceResponse);
 
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isOk())
@@ -106,6 +120,7 @@ public class DevicesControllerTest {
         given(devicesService.addDevice(any(DeviceRequest.class))).willReturn(deviceResponse);
 
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isBadRequest())
@@ -122,6 +137,7 @@ public class DevicesControllerTest {
         given(devicesService.addDevice(any(DeviceRequest.class))).willReturn(deviceResponse);
 
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isBadRequest())
@@ -137,6 +153,7 @@ public class DevicesControllerTest {
         deviceRequest.setOwner(null);
 
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isBadRequest())
@@ -152,6 +169,7 @@ public class DevicesControllerTest {
         deviceRequest.setOwner("");
 
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isBadRequest())
@@ -171,6 +189,7 @@ public class DevicesControllerTest {
         deviceRequest.setOwner("Asd-qwe");
         given(devicesService.addDevice(any(DeviceRequest.class))).willReturn(deviceResponse);
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isOk())
@@ -187,6 +206,7 @@ public class DevicesControllerTest {
     public void addDevice_withSymbolsInOwner() throws Exception {
         deviceRequest.setOwner("Name!@#$%^&*()+=-_;:\"',.?/");
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isBadRequest())
@@ -202,6 +222,7 @@ public class DevicesControllerTest {
         deviceRequest.setModel(null);
 
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isBadRequest())
@@ -217,6 +238,7 @@ public class DevicesControllerTest {
         deviceRequest.setModel("");
 
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isBadRequest())
@@ -236,6 +258,7 @@ public class DevicesControllerTest {
         deviceRequest.setModel("Asd-qwe");
         given(devicesService.addDevice(any(DeviceRequest.class))).willReturn(deviceResponse);
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isOk())
@@ -253,6 +276,7 @@ public class DevicesControllerTest {
         deviceRequest.setModel("Name!@#$%^&*()+=-_;:\"',.?/");
         given(devicesService.addDevice(any(DeviceRequest.class))).willReturn(deviceResponse);
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isOk())
@@ -270,6 +294,7 @@ public class DevicesControllerTest {
         deviceRequest.setOsType(null);
 
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isBadRequest())
@@ -285,6 +310,7 @@ public class DevicesControllerTest {
         deviceRequest.setOsType("");
 
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isBadRequest())
@@ -304,6 +330,7 @@ public class DevicesControllerTest {
         deviceRequest.setOsType("Asd-qwe");
         given(devicesService.addDevice(any(DeviceRequest.class))).willReturn(deviceResponse);
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isOk())
@@ -321,6 +348,7 @@ public class DevicesControllerTest {
         deviceRequest.setOsType("Name!@#$%^&*()+=-_;:\"',.?/");
         given(devicesService.addDevice(any(DeviceRequest.class))).willReturn(deviceResponse);
         mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(deviceRequest)))
                 .andExpect(status().isOk())
@@ -336,7 +364,8 @@ public class DevicesControllerTest {
     @Test
     public void deleteDevice_byId() throws Exception {
         doNothing().when(devicesService).deleteDevice(1L);
-        mvc.perform(delete("/api/devices/{id}", "1"))
+        mvc.perform(delete("/api/devices/{id}", "1")
+                            .header("Authorization", getAdminAuthToken()))
                 .andExpect(status().isOk())
         ;
         verify(devicesService, times(1)).deleteDevice(1L);

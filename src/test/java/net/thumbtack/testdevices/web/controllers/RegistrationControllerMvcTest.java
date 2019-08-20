@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(RegistrationController.class)
-public class RegistrationControllerMvcTest {
+public class RegistrationControllerMvcTest extends BaseControllerTest {
     @Autowired
     private MockMvc mvc;
 
