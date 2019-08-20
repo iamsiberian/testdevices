@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 /**
  * This is service for a java web token
  */
-@Service("JwtTokenService")
 public class JwtTokenService {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtTokenService.class);
     private final JwtSettings settings;
@@ -59,7 +57,6 @@ public class JwtTokenService {
             authorityList.add(authority.getAuthorityType().getAuthorityType());
         }
         claims.put("authorities", authorityList);
-        //claims.put("authorities", user.getAuthorities());
         claims.put("id", user.getId());
         String tokenString = Jwts.builder()
                 .setClaims(claims)

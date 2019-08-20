@@ -5,7 +5,6 @@ import net.thumbtack.testdevices.web.security.JwtAuthFilter;
 import net.thumbtack.testdevices.web.security.JwtAuthSuccessHandler;
 import net.thumbtack.testdevices.web.security.JwtAuthenticationProvider;
 import net.thumbtack.testdevices.web.security.JwtTokenService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -24,13 +23,9 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private JwtTokenService jwtTokenService;
 
-    public SecurityConfig(final @Qualifier("JwtTokenService") JwtTokenService jwtTokenService) {
+    public SecurityConfig(final JwtTokenService jwtTokenService) {
         this.jwtTokenService = jwtTokenService;
     }
-
-//        @Autowired
-//        @Qualifier("JwtTokenService")
-//    private JwtTokenService jwtTokenService;
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
@@ -47,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             return !(
                             path.startsWith("/api/login") |
                             path.startsWith("/api/registration")
-            );  // all paths except /login
+            );
         };
         JwtAuthFilter authFilter = new JwtAuthFilter(authFilterRequests);
         authFilter.setAuthenticationSuccessHandler(new JwtAuthSuccessHandler());

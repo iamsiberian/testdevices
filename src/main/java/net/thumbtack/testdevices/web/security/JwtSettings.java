@@ -1,15 +1,11 @@
 package net.thumbtack.testdevices.web.security;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 /**
  * This class is for customization json web token
  */
-@Component
 public class JwtSettings {
     private String tokenIssuer;
     private String tokenSigningKey;
@@ -18,12 +14,12 @@ public class JwtSettings {
     /**
      * The basic constructor
      *
-     * @param tokenIssuer token issuer from config .yml
-     * @param tokenSigningKey token signing key from config .yml
+     * @param tokenIssuer token issuer from config
+     * @param tokenSigningKey token signing key from config
      */
     public JwtSettings(
-            final @Value("${jwt.token.Issuer}") String tokenIssuer,
-            final @Value("${jwt.token.SigningKey}") String tokenSigningKey
+            final String tokenIssuer,
+            final String tokenSigningKey
     ) {
         this.tokenIssuer = tokenIssuer;
         this.tokenSigningKey = tokenSigningKey;
