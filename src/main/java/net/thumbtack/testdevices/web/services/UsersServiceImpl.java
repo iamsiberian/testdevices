@@ -12,12 +12,14 @@ import net.thumbtack.testdevices.exceptions.TestDevicesException;
 import net.thumbtack.testdevices.web.converters.UserDtoToModelConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UsersServiceImpl implements UsersService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UsersServiceImpl.class);
     private AuthoritiesDao authoritiesDao;
     private UsersDao usersDao;
     private UserDtoToModelConverter userDtoToModelConverter;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public UsersServiceImpl(
             final AuthoritiesDao authoritiesDao,
@@ -27,6 +29,7 @@ public class UsersServiceImpl implements UsersService {
         this.authoritiesDao = authoritiesDao;
         this.usersDao = usersDao;
         this.userDtoToModelConverter = userDtoToModelConverter;
+        this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
@@ -48,6 +51,8 @@ public class UsersServiceImpl implements UsersService {
         if (authority == null) {
             throw new TestDevicesException(ErrorCode.INVALID_AUTHORITY);
         }
+        String hash = bCryptPasswordEncoder.encode(request.getPassword());
+        user.setPassword(hash);
         return userDtoToModelConverter.getUserResponseFromUser(usersDao.insert(authority.getId(), user));
     }
 }
