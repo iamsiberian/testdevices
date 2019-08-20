@@ -1,7 +1,7 @@
 package net.thumbtack.testdevices.web.controllers;
 
 import net.thumbtack.testdevices.core.models.User;
-import net.thumbtack.testdevices.core.services.loginservice.LoginService;
+import net.thumbtack.testdevices.core.services.LoginService;
 import net.thumbtack.testdevices.dto.request.LoginRequest;
 import net.thumbtack.testdevices.web.security.JwtTokenService;
 import org.slf4j.Logger;

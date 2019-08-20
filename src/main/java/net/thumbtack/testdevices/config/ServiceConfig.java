@@ -3,6 +3,7 @@ package net.thumbtack.testdevices.config;
 import net.thumbtack.testdevices.core.repositories.AuthoritiesDao;
 import net.thumbtack.testdevices.core.repositories.DeviceDao;
 import net.thumbtack.testdevices.core.repositories.UsersDao;
+import net.thumbtack.testdevices.core.services.LoginService;
 import net.thumbtack.testdevices.web.converters.DeviceDtoToModelConverter;
 import net.thumbtack.testdevices.web.converters.UserDtoToModelConverter;
 import net.thumbtack.testdevices.web.services.DevicesService;
@@ -14,6 +15,11 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ServiceConfig {
+    @Bean
+    public LoginService getLoginService(final UsersDao usersDao) {
+        return new LoginService(usersDao);
+    }
+
     @Bean
     public DevicesService devicesService(
             final DeviceDao deviceDao,
