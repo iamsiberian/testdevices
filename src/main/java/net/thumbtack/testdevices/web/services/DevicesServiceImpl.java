@@ -8,6 +8,8 @@ import net.thumbtack.testdevices.web.converters.DeviceDtoToModelConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 public class DevicesServiceImpl implements DevicesService {
     private static final Logger LOGGER = LoggerFactory.getLogger(DevicesServiceImpl.class);
     private DeviceDao deviceDao;
@@ -32,5 +34,12 @@ public class DevicesServiceImpl implements DevicesService {
     public void deleteDevice(final long deviceId) {
         LOGGER.debug("DevicesServiceImpl deleteDevice: {}", deviceId);
         deviceDao.deleteById(deviceId);
+    }
+
+    @Override
+    public List<DeviceResponse> getAll() {
+        LOGGER.debug("DevicesServiceImpl getAll");
+        List<Device> deviceList = deviceDao.getAll();
+        return deviceDtoToModelConverter.getDeviceListResponseFromDeviceList(deviceList);
     }
 }
