@@ -31,9 +31,9 @@ public class EventsServiceImpl implements EventsService {
     }
 
     @Override
-    public EventResponse giveDevice(final long userId, final long deviceId) {
-        LOGGER.debug("DevicesServiceImpl giveDevice: {}, by user id : {}", deviceId, userId);
-        Event event = eventsDao.insert(eventDtoToModelConverter.getEventFromDeviceIdUserIdActionType(userId, deviceId, ActionType.GIVE, LocalDateTime.now()));
+    public EventResponse takeDevice(final long userId, final long deviceId) {
+        LOGGER.debug("DevicesServiceImpl takeDevice: {}, by user id : {}", deviceId, userId);
+        Event event = eventsDao.insert(eventDtoToModelConverter.getEventFromDeviceIdUserIdActionType(userId, deviceId, ActionType.TAKE, LocalDateTime.now()));
         return eventDtoToModelConverter.getEventResponseFromEvent(event);
     }
 }

@@ -60,7 +60,7 @@ public class DevicesController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'USER')")
-    @GetMapping(path = "/devices/{id}/take", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/devices/{id}/return", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity returnDevice(final @RequestHeader("Authorization") String authHeader, final @PathVariable("id") long deviceId) {
         LOGGER.debug("DevicesController returnDevice {}, from requestHeader: {}", deviceId, authHeader);
         long userId = jwtTokenService.getUserIdFromAuthHeader(authHeader);
@@ -71,13 +71,13 @@ public class DevicesController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'USER')")
-    @DeleteMapping(path = "/devices/{id}/give", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity giveDevice(final @RequestHeader("Authorization") String authHeader, final @PathVariable("id") long deviceId) {
-        LOGGER.debug("DevicesController giveDevice {}", deviceId);
+    @DeleteMapping(path = "/devices/{id}/take", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity takeDevice(final @RequestHeader("Authorization") String authHeader, final @PathVariable("id") long deviceId) {
+        LOGGER.debug("DevicesController takeDevice {}", deviceId);
         long userId = jwtTokenService.getUserIdFromAuthHeader(authHeader);
         return
                 ResponseEntity
                         .ok()
-                        .body(eventsService.giveDevice(userId, deviceId));
+                        .body(eventsService.takeDevice(userId, deviceId));
     }
 }
