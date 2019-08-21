@@ -41,7 +41,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             String path = request.getServletPath() + request.getPathInfo();
             return !(
                             path.startsWith("/api/login") |
-                            path.startsWith("/api/registration")
+                            path.startsWith("/api/registration") |
+                            path.startsWith("/swagger-") |
+                            path.startsWith("/v2/api-docs") |
+                            path.startsWith("/webjars") |
+                            path.startsWith("/csrf") |
+                            path.startsWith("/error")
             );
         };
         JwtAuthFilter authFilter = new JwtAuthFilter(authFilterRequests);
@@ -52,11 +57,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/registration/user").permitAll()
+                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated();
     }
 
     @Override
-    public void configure(final AuthenticationManagerBuilder auth) throws Exception {
+    public void configure(final AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(new JwtAuthenticationProvider(jwtTokenService));
     }
 }
