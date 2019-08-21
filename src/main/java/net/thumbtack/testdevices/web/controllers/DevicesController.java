@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,5 +46,15 @@ public class DevicesController {
                 ResponseEntity
                         .ok()
                         .build();
+    }
+
+    @PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'USER')")
+    @GetMapping(path = "/devices", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getAllDevices() {
+        LOGGER.debug("DevicesController getAllDevices");
+        return
+                ResponseEntity
+                        .ok()
+                        .body(devicesService.getAll());
     }
 }
