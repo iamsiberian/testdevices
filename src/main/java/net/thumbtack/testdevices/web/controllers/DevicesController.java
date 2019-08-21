@@ -49,7 +49,7 @@ public class DevicesController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMINISTRATOR')")
-    @GetMapping(path = "/devices/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(path = "/devices/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity deleteDevice(final @PathVariable("id") long deviceId) {
         LOGGER.debug("DevicesController deleteDevice {}", deviceId);
         devicesService.deleteDevice(deviceId);
@@ -71,7 +71,7 @@ public class DevicesController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'USER')")
-    @DeleteMapping(path = "/devices/{id}/take", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/devices/{id}/take", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity takeDevice(final @RequestHeader("Authorization") String authHeader, final @PathVariable("id") long deviceId) {
         LOGGER.debug("DevicesController takeDevice {}", deviceId);
         long userId = jwtTokenService.getUserIdFromAuthHeader(authHeader);
