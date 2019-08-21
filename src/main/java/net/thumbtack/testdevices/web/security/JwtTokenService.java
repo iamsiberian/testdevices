@@ -82,4 +82,11 @@ public class JwtTokenService {
 
         return new AuthenticatedJwtToken(subject, authorities);
     }
+
+    public long getUserIdFromAuthHeader(final String authHeader) {
+        LOGGER.debug("getUserIdFromAuthHeader: {}", authHeader);
+        String token = authHeader.replace("Bearer ", "");
+        Jws<Claims> claims = Jwts.parser().setSigningKey(settings.getTokenSigningKey()).parseClaimsJws(token);
+        return claims.getBody().get("id", Long.class);
+    }
 }
