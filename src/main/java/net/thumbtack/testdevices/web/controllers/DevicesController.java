@@ -79,5 +79,14 @@ public class DevicesController {
                 ResponseEntity
                         .ok()
                         .body(eventsService.takeDevice(userId, deviceId));
+    }  
+
+    @GetMapping(path = "/devices", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getAllDevices() {
+        LOGGER.debug("DevicesController getAllDevices");
+        return
+                ResponseEntity
+                        .ok()
+                        .body(devicesService.getAll());
     }
 }

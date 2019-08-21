@@ -5,6 +5,9 @@ import net.thumbtack.testdevices.core.models.DeviceType;
 import net.thumbtack.testdevices.dto.request.DeviceRequest;
 import net.thumbtack.testdevices.dto.response.DeviceResponse;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DeviceDtoToModelConverter {
     public DeviceResponse getDeviceResponseFromDevice(final Device device) {
         return new DeviceResponse(
@@ -25,5 +28,13 @@ public class DeviceDtoToModelConverter {
                 request.getOsType(),
                 request.getDescription()
         );
+    }
+
+    public List<DeviceResponse> getDeviceListResponseFromDeviceList(final List<Device> deviceList) {
+        List<DeviceResponse> deviceResponseList = new ArrayList<>();
+        for (Device device : deviceList) {
+            deviceResponseList.add(getDeviceResponseFromDevice(device));
+        }
+        return deviceResponseList;
     }
 }
