@@ -408,7 +408,7 @@ public class DevicesControllerTest extends BaseControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(returnEventResponse.getUserId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.deviceId").value(returnEventResponse.getDeviceId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.actionType").value(returnEventResponse.getActionType().name()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.date").value(returnEventResponse.getDate().toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.date").isString())
         ;
 
         verify(eventsService, times(1)).returnDevice(1L, 1L);
@@ -425,7 +425,7 @@ public class DevicesControllerTest extends BaseControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(takeEventResponse.getUserId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.deviceId").value(takeEventResponse.getDeviceId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.actionType").value(takeEventResponse.getActionType().name()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.date").value(takeEventResponse.getDate().toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.date").isString())
         ;
 
         verify(eventsService, times(1)).takeDevice(1L, 1L);
