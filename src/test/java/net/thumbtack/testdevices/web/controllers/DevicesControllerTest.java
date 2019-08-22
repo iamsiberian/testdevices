@@ -1,10 +1,13 @@
 package net.thumbtack.testdevices.web.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.thumbtack.testdevices.core.models.ActionType;
 import net.thumbtack.testdevices.core.models.DeviceType;
 import net.thumbtack.testdevices.dto.request.DeviceRequest;
 import net.thumbtack.testdevices.dto.response.DeviceResponse;
+import net.thumbtack.testdevices.dto.response.EventResponse;
 import net.thumbtack.testdevices.web.services.DevicesService;
+import net.thumbtack.testdevices.web.services.EventsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,13 +19,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.time.LocalDateTime;
+
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,9 +42,14 @@ public class DevicesControllerTest extends BaseControllerTest {
     private ObjectMapper objectMapper;
     private DeviceRequest deviceRequest;
     private DeviceResponse deviceResponse;
+    private EventResponse returnEventResponse;
+    private EventResponse takeEventResponse;
 
     @MockBean
     private DevicesService devicesService;
+
+    @MockBean
+    private EventsService eventsService;
 
     @Before
     public void setup() {
@@ -56,6 +68,20 @@ public class DevicesControllerTest extends BaseControllerTest {
                 "iPhone 1337",
                 "iOS",
                 "abracadabra"
+        );
+        returnEventResponse = new EventResponse(
+                1L,
+                1L,
+                1L,
+                ActionType.RETURN,
+                LocalDateTime.now()
+        );
+        takeEventResponse = new EventResponse(
+                1L,
+                1L,
+                1L,
+                ActionType.TAKE,
+                LocalDateTime.now()
         );
     }
 
@@ -369,5 +395,39 @@ public class DevicesControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk())
         ;
         verify(devicesService, times(1)).deleteDevice(1L);
+    }
+
+    @Test
+    public void testReturnDevice() throws Exception {
+        given(eventsService.returnDevice(anyLong(), anyLong())).willReturn(returnEventResponse);
+
+        mvc.perform(get("/api/devices/{id}/return", "1")
+                            .header("Authorization", getUserAuthToken()))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(returnEventResponse.getUserId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.deviceId").value(returnEventResponse.getDeviceId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.actionType").value(returnEventResponse.getActionType().name()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.date").value(returnEventResponse.getDate().toString()))
+        ;
+
+        verify(eventsService, times(1)).returnDevice(1L, 1L);
+    }
+
+    @Test
+    public void testTakeDevice() throws Exception {
+        given(eventsService.takeDevice(anyLong(), anyLong())).willReturn(takeEventResponse);
+
+        mvc.perform(get("/api/devices/{id}/take", "1")
+                            .header("Authorization", getUserAuthToken()))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(takeEventResponse.getUserId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.deviceId").value(takeEventResponse.getDeviceId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.actionType").value(takeEventResponse.getActionType().name()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.date").value(takeEventResponse.getDate().toString()))
+        ;
+
+        verify(eventsService, times(1)).takeDevice(1L, 1L);
     }
 }
