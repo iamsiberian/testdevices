@@ -6,4 +6,6 @@ public interface EventsDao {
     Event insert(Event event);
 
     void deleteAll();
+
+    Event getLastEventByDeviceIdAndUserId(long deviceId, Long userId);
 }

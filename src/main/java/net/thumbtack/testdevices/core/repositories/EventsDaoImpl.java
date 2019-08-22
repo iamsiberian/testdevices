@@ -28,4 +28,11 @@ public class EventsDaoImpl implements EventsDao {
         LOGGER.debug("EventsDaoImpl deleteAll events");
         eventMapper.deleteAll();
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Event getLastEventByDeviceIdAndUserId(final long deviceId, final Long userId) {
+        LOGGER.debug("EventsDaoImpl getLastEventByDeviceId: {} And UserId: {}", deviceId, userId);
+        return eventMapper.getLastEventByDeviceIdAndUserId(deviceId, userId);
+    }
 }
