@@ -46,7 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             path.startsWith("/v2/api-docs") |
                             path.startsWith("/webjars") |
                             path.startsWith("/csrf") |
-                            path.startsWith("/error")
+                            path.startsWith("/error") |
+                            path.startsWith("/actuator")
             );
         };
         JwtAuthFilter authFilter = new JwtAuthFilter(authFilterRequests);
@@ -58,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/registration/user").permitAll()
                 .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**").permitAll()
+                .antMatchers("/actuator/**").permitAll()
                 .and().authorizeRequests().anyRequest().authenticated();
     }
 
