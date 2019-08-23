@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -79,14 +80,15 @@ public class DevicesController {
                 ResponseEntity
                         .ok()
                         .body(eventsService.takeDevice(userId, deviceId));
-    }  
+    }
 
+    @PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'USER')")
     @GetMapping(path = "/devices", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getAllDevices() {
+    public ResponseEntity getAllDevices(final @RequestParam(value = "search", defaultValue = "", required = false) String search) {
         LOGGER.debug("DevicesController getAllDevices");
         return
                 ResponseEntity
                         .ok()
-                        .body(devicesService.getAll());
+                        .body(devicesService.getDevicesWithLastUserWhoTakenDevice(search));
     }
 }
