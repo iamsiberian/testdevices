@@ -2,10 +2,14 @@ package net.thumbtack.testdevices.web.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import net.thumbtack.testdevices.core.models.ActionType;
+import net.thumbtack.testdevices.core.models.Authority;
+import net.thumbtack.testdevices.core.models.AuthorityType;
 import net.thumbtack.testdevices.core.models.DeviceType;
 import net.thumbtack.testdevices.dto.request.DeviceRequest;
 import net.thumbtack.testdevices.dto.response.DeviceResponse;
+import net.thumbtack.testdevices.dto.response.DeviceWithLastUserResponse;
 import net.thumbtack.testdevices.dto.response.EventResponse;
+import net.thumbtack.testdevices.dto.response.UserResponse;
 import net.thumbtack.testdevices.web.services.DevicesService;
 import net.thumbtack.testdevices.web.services.EventsService;
 import org.junit.Before;
@@ -20,10 +24,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
@@ -44,6 +53,11 @@ public class DevicesControllerTest extends BaseControllerTest {
     private DeviceResponse deviceResponse;
     private EventResponse returnEventResponse;
     private EventResponse takeEventResponse;
+    private List<DeviceWithLastUserResponse> deviceWithLastUserResponseList;
+    private UserResponse userResponse;
+    private Authority authority;
+    private DeviceWithLastUserResponse deviceWithLastUserResponse;
+    private DeviceWithLastUserResponse deviceWithLastUserResponse2;
 
     @MockBean
     private DevicesService devicesService;
@@ -83,6 +97,44 @@ public class DevicesControllerTest extends BaseControllerTest {
                 ActionType.TAKE,
                 LocalDateTime.now()
         );
+
+        authority = new Authority(
+                1L,
+                AuthorityType.USER
+        );
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(authority);
+
+        userResponse = new UserResponse(
+                2L,
+                "Vasiliy",
+                "Pupkin",
+                "+79923456789",
+                "vasiliy.pupkin@mail.com",
+                authorities
+        );
+
+        deviceWithLastUserResponseList = new ArrayList<>();
+        deviceWithLastUserResponse = new DeviceWithLastUserResponse(
+                1L,
+                DeviceType.PHONE,
+                "Apple",
+                "iPhone 1337",
+                "iOS",
+                "abracadabra",
+                null
+        );
+        deviceWithLastUserResponseList.add(deviceWithLastUserResponse);
+        deviceWithLastUserResponse2 = new DeviceWithLastUserResponse(
+                1L,
+                DeviceType.TABLET_PC,
+                "Huawei",
+                "Df123",
+                "Android",
+                "abracadabra",
+                userResponse
+        );
+        deviceWithLastUserResponseList.add(deviceWithLastUserResponse2);
     }
 
     @Test
@@ -429,5 +481,37 @@ public class DevicesControllerTest extends BaseControllerTest {
         ;
 
         verify(eventsService, times(1)).takeDevice(1L, 1L);
+    }
+
+    @Test
+    public void testGetAllDevices() throws Exception {
+        given(devicesService.getDevicesWithLastUserWhoTakenDevice("")).willReturn(deviceWithLastUserResponseList);
+
+        mvc.perform(get("/api/devices")
+                            .param("search", "")
+                            .header("Authorization", getUserAuthToken()))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(deviceWithLastUserResponse.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].type").value(deviceWithLastUserResponse.getType().name()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].owner").value(deviceWithLastUserResponse.getOwner()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].model").value(deviceWithLastUserResponse.getModel()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].osType").value(deviceWithLastUserResponse.getOsType()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].description").value(deviceWithLastUserResponse.getDescription()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].id").value(deviceWithLastUserResponse2.getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].type").value(deviceWithLastUserResponse2.getType().name()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].owner").value(deviceWithLastUserResponse2.getOwner()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].model").value(deviceWithLastUserResponse2.getModel()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].osType").value(deviceWithLastUserResponse2.getOsType()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].description").value(deviceWithLastUserResponse2.getDescription()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].userResponse.id").value(deviceWithLastUserResponse2.getUserResponse().getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].userResponse.firstName").value(deviceWithLastUserResponse2.getUserResponse().getFirstName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].userResponse.lastName").value(deviceWithLastUserResponse2.getUserResponse().getLastName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].userResponse.phone").value(deviceWithLastUserResponse2.getUserResponse().getPhone()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].userResponse.email").value(deviceWithLastUserResponse2.getUserResponse().getEmail()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[1].userResponse.authorities[0].authorityType").value(AuthorityType.USER.getAuthorityType()))
+        ;
+
+        verify(devicesService, times(1)).getDevicesWithLastUserWhoTakenDevice(eq(""));
     }
 }
