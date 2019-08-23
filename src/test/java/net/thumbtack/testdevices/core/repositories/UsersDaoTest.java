@@ -1,7 +1,11 @@
 package net.thumbtack.testdevices.core.repositories;
 
+import net.thumbtack.testdevices.core.models.ActionType;
 import net.thumbtack.testdevices.core.models.Authority;
 import net.thumbtack.testdevices.core.models.AuthorityType;
+import net.thumbtack.testdevices.core.models.Device;
+import net.thumbtack.testdevices.core.models.DeviceType;
+import net.thumbtack.testdevices.core.models.Event;
 import net.thumbtack.testdevices.core.models.User;
 import org.junit.After;
 import org.junit.Assert;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -23,6 +28,14 @@ public class UsersDaoTest {
     private AuthoritiesDao authoritiesDao;
     @Autowired
     private UsersDao usersDao;
+    @Autowired
+    private EventsDao eventsDao;
+    @Autowired
+    private DeviceDao deviceDao;
+
+    private Device phone;
+    private Device tabletPC;
+    private Event takeEvent;
 
     private User user;
     private Authority userAuthority;
@@ -35,6 +48,8 @@ public class UsersDaoTest {
 
     @Before
     public void setup() {
+        eventsDao.deleteAll();
+        deviceDao.deleteAll();
         usersDao.deleteAll();
         authoritiesDao.deleteAll();
 
@@ -60,10 +75,31 @@ public class UsersDaoTest {
                 "vasiliy.pupkin@mail.com",
                 "123456"
         );
+
+        phone = new Device(
+                DeviceType.PHONE,
+                "owner",
+                "model",
+                "osType",
+                "description"
+        );
+        tabletPC = new Device(
+                DeviceType.TABLET_PC,
+                "owner",
+                "model",
+                "osType",
+                "description"
+        );
+        takeEvent = new Event(
+                ActionType.TAKE,
+                LocalDateTime.now()
+        );
     }
 
     @After
     public void clean() {
+        eventsDao.deleteAll();
+        deviceDao.deleteAll();
         usersDao.deleteAll();
         authoritiesDao.deleteAll();
     }
@@ -140,5 +176,29 @@ public class UsersDaoTest {
         usersDao.deleteAll();
         Assert.assertNull(usersDao.getById(userAfterAdd.getId()));
         Assert.assertNull(usersDao.getById(administratorAfterAdd.getId()));
+    }
+
+    @Test
+    public void testGetLastUserWhoTakenDeviceByDeviceId() {
+        Device phoneAfterAdd = deviceDao.insert(phone);
+        Assert.assertNotNull(phoneAfterAdd.getId());
+        Device tabletPCAfterAdd = deviceDao.insert(tabletPC);
+        Assert.assertNotNull(tabletPCAfterAdd.getId());
+
+        User userAfterAdd = usersDao.insert(userAuthorityId, user);
+        Assert.assertNotNull(userAfterAdd.getId());
+        Set<Authority> userAfterAddAuthorities = userAfterAdd.getAuthorities();
+        Assert.assertEquals(1, userAfterAddAuthorities.size());
+        Assert.assertTrue(userAfterAddAuthorities.contains(userAuthority));
+
+        takeEvent.setUserId(userAfterAdd.getId());
+        takeEvent.setDeviceId(phoneAfterAdd.getId());
+
+        Event eventAfterAdd = eventsDao.insert(takeEvent);
+
+        Assert.assertNotNull(eventAfterAdd.getId());
+
+        User lastUserWhoTakenDevice = usersDao.getLastUserWhoTakenDeviceByDeviceId(phoneAfterAdd.getId());
+        Assert.assertEquals(userAfterAdd, lastUserWhoTakenDevice);
     }
 }
