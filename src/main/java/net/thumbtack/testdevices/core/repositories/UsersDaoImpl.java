@@ -55,6 +55,13 @@ public class UsersDaoImpl implements UsersDao {
 
     @Transactional(readOnly = true)
     @Override
+    public User getLastUserWhoTakenDeviceByDeviceId(final long deviceId) {
+        LOGGER.debug("UsersDaoImpl getLastUserWhoTakenDeviceByDeviceId: {}", deviceId);
+        return userMapper.getLastUserWhoTakenDeviceByDeviceId(deviceId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public User findByLogin(final String email) {
         LOGGER.debug("UsersDaoImpl findByLogin : {}", email);
         return userMapper.getByEMail(email);

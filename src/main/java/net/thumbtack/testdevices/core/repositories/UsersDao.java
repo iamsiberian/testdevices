@@ -11,6 +11,8 @@ public interface UsersDao {
 
     User getById(long id);
 
+    User getLastUserWhoTakenDeviceByDeviceId(long deviceId);
+
     User findByLogin(String email);
 
     void deleteAll();

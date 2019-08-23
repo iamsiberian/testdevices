@@ -2,6 +2,7 @@ package net.thumbtack.testdevices.core.repositories;
 
 import net.thumbtack.testdevices.core.mappers.DeviceMapper;
 import net.thumbtack.testdevices.core.models.Device;
+import net.thumbtack.testdevices.core.models.DeviceWithLastUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,13 @@ public class DeviceDaoImpl implements DeviceDao {
     public List<Device> getAll() {
         LOGGER.debug("DeviceDaoImpl getAll");
         return deviceMapper.getAll();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<DeviceWithLastUser> getDevicesWithLastUserWhoTakenDevice(final String search) {
+        LOGGER.debug("DeviceDaoImpl getDevicesWithLastUserWhoTakenDevice, search: {}", search);
+        return deviceMapper.getDevicesWithLastUserWhoTakenDevice(search);
     }
 
     @Transactional(readOnly = true)

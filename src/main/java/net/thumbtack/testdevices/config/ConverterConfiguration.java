@@ -1,6 +1,7 @@
 package net.thumbtack.testdevices.config;
 
 import net.thumbtack.testdevices.web.converters.DeviceDtoToModelConverter;
+import net.thumbtack.testdevices.web.converters.DeviceWithLastUserDtoToModelConverter;
 import net.thumbtack.testdevices.web.converters.EventDtoToModelConverter;
 import net.thumbtack.testdevices.web.converters.UserDtoToModelConverter;
 import org.springframework.context.annotation.Bean;
@@ -21,5 +22,12 @@ public class ConverterConfiguration {
     @Bean
     public EventDtoToModelConverter getEventDtoToModelConverter() {
         return new EventDtoToModelConverter();
+    }
+
+    @Bean
+    public DeviceWithLastUserDtoToModelConverter getDeviceWithLastUserDtoToModelConverter(
+            final UserDtoToModelConverter userDtoToModelConverter
+    ) {
+        return new DeviceWithLastUserDtoToModelConverter(userDtoToModelConverter);
     }
 }
