@@ -6,6 +6,7 @@ import net.thumbtack.testdevices.core.repositories.EventsDao;
 import net.thumbtack.testdevices.core.repositories.UsersDao;
 import net.thumbtack.testdevices.core.services.LoginService;
 import net.thumbtack.testdevices.web.converters.DeviceDtoToModelConverter;
+import net.thumbtack.testdevices.web.converters.DeviceWithLastUserDtoToModelConverter;
 import net.thumbtack.testdevices.web.converters.EventDtoToModelConverter;
 import net.thumbtack.testdevices.web.converters.UserDtoToModelConverter;
 import net.thumbtack.testdevices.web.services.DevicesService;
@@ -27,9 +28,10 @@ public class ServiceConfig {
     @Bean
     public DevicesService devicesService(
             final DeviceDao deviceDao,
-            final DeviceDtoToModelConverter deviceDtoToModelConverter
+            final DeviceDtoToModelConverter deviceDtoToModelConverter,
+            final DeviceWithLastUserDtoToModelConverter deviceWithLastUserDtoToModelConverter
     ) {
-        return new DevicesServiceImpl(deviceDao, deviceDtoToModelConverter);
+        return new DevicesServiceImpl(deviceDao, deviceDtoToModelConverter, deviceWithLastUserDtoToModelConverter);
     }
 
     @Bean
