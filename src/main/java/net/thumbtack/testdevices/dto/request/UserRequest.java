@@ -26,7 +26,10 @@ public class UserRequest {
             message = "phone is incorrect. Example: +7-913-123-45-67 or 89131234567"
     )
     private String phone;
-    @Email
+    @Email(
+            regexp = "^([a-zA-Z0-9.]+)@lineate.com$",
+            message = "email may contain English letters, numbers, dot symbol and belong to the domain @lineate.com"
+    )
     private String email;
     @NotBlank(message = "password can not be blank or null")
     @Pattern(

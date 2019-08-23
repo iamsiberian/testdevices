@@ -54,7 +54,7 @@ public class RegistrationControllerMvcTest extends BaseControllerTest {
                 "Vasiliy",
                 "Pupkin",
                 "+79923456789",
-                "vasiliy.pupkin@mail.com",
+                "vasiliy.pupkin@lineate.com",
                 "123456"
         );
         userResponse = new UserResponse(
@@ -62,7 +62,7 @@ public class RegistrationControllerMvcTest extends BaseControllerTest {
                 "Vasiliy",
                 "Pupkin",
                 "+79923456789",
-                "vasiliy.pupkin@mail.com",
+                "vasiliy.pupkin@lineate.com",
                 authoritySet
         );
     }
@@ -308,7 +308,7 @@ public class RegistrationControllerMvcTest extends BaseControllerTest {
 
     @Test
     public void registrationUser_withBadEmail() throws Exception {
-        userRequest.setEmail("asdasdmail.ru");
+        userRequest.setEmail("asdasd@mail.com");
         mvc.perform(post("/api/registration/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(userRequest)))
@@ -317,7 +317,7 @@ public class RegistrationControllerMvcTest extends BaseControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errorList", hasSize(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errorList[0].errorCode").value("EMAIL_IS_INVALID"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errorList[0].field").value("email"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.errorList[0].message").value("must be a well-formed email address"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errorList[0].message").value("email may contain English letters, numbers, dot symbol and belong to the domain @lineate.com"))
         ;
     }
 
