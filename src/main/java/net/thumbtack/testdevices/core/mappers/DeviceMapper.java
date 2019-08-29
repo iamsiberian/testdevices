@@ -77,7 +77,8 @@ public interface DeviceMapper {
             "FROM devices d\n" +
             "  JOIN events e on d.id = e.device_id\n" +
             "WHERE e.action_type = 'TAKE'\n" +
-            "  AND e.user_id = #{userId}"
+            "  AND e.user_id = #{userId}\n" +
+            "AND d.is_deleted = FALSE"
     )
     List<Device> getMyDevices(@Param("userId") long userId);
 }
