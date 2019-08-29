@@ -59,4 +59,11 @@ public class DeviceDaoImpl implements DeviceDao {
         LOGGER.debug("DeviceDaoImpl deleteAll devices");
         deviceMapper.deleteAll();
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Device> getMyDevices(final long userId) {
+        LOGGER.debug("DeviceDaoImpl getMyDevices by user id: {}", userId);
+        return deviceMapper.getMyDevices(userId);
+    }
 }

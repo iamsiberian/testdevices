@@ -71,4 +71,13 @@ public interface DeviceMapper {
             "DELETE FROM devices"
     )
     Integer deleteAll();
+
+    @Select(
+            "SELECT d.id, d.type, d.owner, d.model, d.os_type AS osType, d.description\n" +
+            "FROM devices d\n" +
+            "  JOIN events e on d.id = e.device_id\n" +
+            "WHERE e.action_type = 'TAKE'\n" +
+            "  AND e.user_id = #{userId}"
+    )
+    List<Device> getMyDevices(@Param("userId") long userId);
 }

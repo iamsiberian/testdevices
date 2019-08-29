@@ -57,6 +57,13 @@ public class DevicesServiceImpl implements DevicesService {
         return deviceWithLastUserDtoToModelConverter.getDeviceWithLastUserResponseListFromDeviceWithLastUserList(deviceWithLastUserList);
     }
 
+    @Override
+    public List<DeviceResponse> getMyDevices(final long userId) {
+        LOGGER.debug("DevicesServiceImpl getMyDevices: by user id : {}", userId);
+        List<Device> deviceList = deviceDao.getMyDevices(userId);
+        return deviceDtoToModelConverter.getDeviceListResponseFromDeviceList(deviceList);
+    }
+
     private String getSearch(final String search) {
         if (StringUtils.isEmpty(search)) {
             return null;

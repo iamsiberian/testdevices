@@ -248,4 +248,29 @@ public class DeviceDaoTest {
         List<DeviceWithLastUser> deviceWithLastUserList = deviceDao.getDevicesWithLastUserWhoTakenDevice("asdadadadadadad");
         Assert.assertEquals(0, deviceWithLastUserList.size());
     }
+
+    @Test
+    public void testGetMyDevices() {
+        Device phoneAfterAdd = deviceDao.insert(phone);
+        Assert.assertNotNull(phoneAfterAdd.getId());
+        Device tabletPCAfterAdd = deviceDao.insert(tabletPC);
+        Assert.assertNotNull(tabletPCAfterAdd.getId());
+
+        User userAfterAdd = usersDao.insert(userAuthorityId, user);
+        Assert.assertNotNull(userAfterAdd.getId());
+        Set<Authority> userAfterAddAuthorities = userAfterAdd.getAuthorities();
+        Assert.assertEquals(1, userAfterAddAuthorities.size());
+        Assert.assertTrue(userAfterAddAuthorities.contains(userAuthority));
+
+        takeEvent.setUserId(userAfterAdd.getId());
+        takeEvent.setDeviceId(phoneAfterAdd.getId());
+
+        Event eventAfterAdd = eventsDao.insert(takeEvent);
+        Assert.assertNotNull(eventAfterAdd.getId());
+
+        List<Device> userDeviceList = deviceDao.getMyDevices(userAfterAdd.getId());
+        Assert.assertEquals(1, userDeviceList.size());
+
+        Assert.assertTrue(userDeviceList.contains(phoneAfterAdd));
+    }
 }

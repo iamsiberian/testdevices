@@ -58,6 +58,7 @@ public class DevicesControllerTest extends BaseControllerTest {
     private Authority authority;
     private DeviceWithLastUserResponse deviceWithLastUserResponse;
     private DeviceWithLastUserResponse deviceWithLastUserResponse2;
+    private List<DeviceResponse> deviceResponseList;
 
     @MockBean
     private DevicesService devicesService;
@@ -83,6 +84,8 @@ public class DevicesControllerTest extends BaseControllerTest {
                 "iOS",
                 "abracadabra"
         );
+        deviceResponseList = new ArrayList<>();
+        deviceResponseList.add(deviceResponse);
         returnEventResponse = new EventResponse(
                 1L,
                 1L,
@@ -440,6 +443,24 @@ public class DevicesControllerTest extends BaseControllerTest {
     }
 
     @Test
+    public void addDevice_withSymbolsInDescription() throws Exception {
+        deviceRequest.setDescription("Name!@#$%^&*()+=-_;:\"',.?/");
+        given(devicesService.addDevice(any(DeviceRequest.class))).willReturn(deviceResponse);
+        mvc.perform(post("/api/devices")
+                            .header("Authorization", getAdminAuthToken())
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(deviceRequest)))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.type").value(deviceResponse.getType().getDeviceType()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.owner").value(deviceResponse.getOwner()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.model").value(deviceResponse.getModel()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.osType").value(deviceResponse.getOsType()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.description").value(deviceResponse.getDescription()))
+        ;
+    }
+
+    @Test
     public void deleteDevice_byId() throws Exception {
         doNothing().when(devicesService).deleteDevice(1L);
         mvc.perform(delete("/api/devices/{id}", "1")
@@ -513,5 +534,24 @@ public class DevicesControllerTest extends BaseControllerTest {
         ;
 
         verify(devicesService, times(1)).getDevicesWithLastUserWhoTakenDevice(eq(""));
+    }
+
+    @Test
+    public void testGetMyDevices() throws Exception {
+        given(devicesService.getMyDevices(anyLong())).willReturn(deviceResponseList);
+
+        mvc.perform(get("/api/devices/my")
+                            .header("Authorization", getUserAuthToken()))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].id").value(deviceResponseList.get(0).getId()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].type").value(deviceResponseList.get(0).getType().name()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].owner").value(deviceResponseList.get(0).getOwner()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].model").value(deviceResponseList.get(0).getModel()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].osType").value(deviceResponseList.get(0).getOsType()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.[0].description").value(deviceResponseList.get(0).getDescription()))
+        ;
+
+        verify(devicesService, times(1)).getMyDevices(1L);
     }
 }

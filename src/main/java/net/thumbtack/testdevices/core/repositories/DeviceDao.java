@@ -17,4 +17,6 @@ public interface DeviceDao {
     void deleteById(long id);
 
     void deleteAll();
+
+    List<Device> getMyDevices(long userId);
 }
