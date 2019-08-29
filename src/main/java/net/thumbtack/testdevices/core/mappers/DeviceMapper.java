@@ -75,11 +75,20 @@ public interface DeviceMapper {
 
     @Select(
             "SELECT d.id, d.type, d.owner, d.model, d.os_type AS osType, d.description\n" +
-            "FROM devices d\n" +
-            "  JOIN events e on d.id = e.device_id\n" +
-            "WHERE e.action_type = 'TAKE'\n" +
-            "  AND e.user_id = #{userId}\n" +
-            "AND d.is_deleted = FALSE"
+            "FROM (\n" +
+            "         SELECT id,\n" +
+            "                user_id,\n" +
+            "                device_id,\n" +
+            "                action_type,\n" +
+            "                date,\n" +
+            "                max(date) OVER (PARTITION BY device_id) AS max_date\n" +
+            "         FROM events\n" +
+            "     ) AS last_values\n" +
+            "JOIN devices d ON d.id = last_values.device_id\n" +
+            "WHERE date = max_date\n" +
+            "  AND d.is_deleted = FALSE\n" +
+            "  AND last_values.action_type = 'TAKE'\n" +
+            "  AND user_id = #{userId}"
     )
     List<Device> getMyDevices(@Param("userId") long userId);
 }
