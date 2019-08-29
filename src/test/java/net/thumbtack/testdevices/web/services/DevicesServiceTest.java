@@ -5,6 +5,7 @@ import net.thumbtack.testdevices.core.models.DeviceType;
 import net.thumbtack.testdevices.core.models.DeviceWithLastUser;
 import net.thumbtack.testdevices.core.repositories.DeviceDao;
 import net.thumbtack.testdevices.dto.request.DeviceRequest;
+import net.thumbtack.testdevices.dto.response.DeviceResponse;
 import net.thumbtack.testdevices.dto.response.DeviceWithLastUserResponse;
 import net.thumbtack.testdevices.web.converters.DeviceDtoToModelConverter;
 import net.thumbtack.testdevices.web.converters.DeviceWithLastUserDtoToModelConverter;
@@ -24,9 +25,13 @@ public class DevicesServiceTest {
     private DeviceWithLastUserDtoToModelConverter deviceWithLastUserDtoToModelConverter;
     private List<DeviceWithLastUser> deviceWithLastUserList;
     private List<DeviceWithLastUserResponse> deviceWithLastUserResponseList;
+    private List<Device> deviceList;
+    private List<DeviceResponse> deviceResponseList;
 
     @Before
     public void setup() {
+        deviceList = mock(List.class);
+        deviceResponseList = mock(List.class);
         deviceWithLastUserList = mock(List.class);
         deviceWithLastUserResponseList = mock(List.class);
         deviceDao = mock(DeviceDao.class);
@@ -80,5 +85,35 @@ public class DevicesServiceTest {
         verify(
                 deviceWithLastUserDtoToModelConverter, times(1)
         ).getDeviceWithLastUserResponseListFromDeviceWithLastUserList(deviceWithLastUserList);
+    }
+
+    @Test
+    public void testGetAllDevices() {
+        when(deviceDao.getAll()).thenReturn(deviceList);
+        when(
+                deviceDtoToModelConverter.getDeviceListResponseFromDeviceList(deviceList)
+        ).thenReturn(deviceResponseList);
+
+        devicesServiceImpl.getAll();
+
+        verify(deviceDao, times(1)).getAll();
+        verify(
+                deviceDtoToModelConverter, times(1)
+        ).getDeviceListResponseFromDeviceList(deviceList);
+    }
+
+    @Test
+    public void testGetMyDevices() {
+        when(deviceDao.getMyDevices(1L)).thenReturn(deviceList);
+        when(
+                deviceDtoToModelConverter.getDeviceListResponseFromDeviceList(deviceList)
+        ).thenReturn(deviceResponseList);
+
+        devicesServiceImpl.getMyDevices(1L);
+
+        verify(deviceDao, times(1)).getMyDevices(eq(1L));
+        verify(
+                deviceDtoToModelConverter, times(1)
+        ).getDeviceListResponseFromDeviceList(deviceList);
     }
 }

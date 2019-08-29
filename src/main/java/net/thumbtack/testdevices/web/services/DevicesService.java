@@ -14,4 +14,6 @@ public interface DevicesService {
     List<DeviceResponse> getAll();
 
     List<DeviceWithLastUserResponse> getDevicesWithLastUserWhoTakenDevice(String search);
+
+    List<DeviceResponse> getMyDevices(long userId);
 }

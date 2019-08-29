@@ -91,4 +91,15 @@ public class DevicesController {
                         .ok()
                         .body(devicesService.getDevicesWithLastUserWhoTakenDevice(search));
     }
+
+    @PreAuthorize("hasAnyAuthority('ADMINISTRATOR', 'USER')")
+    @GetMapping(path = "/devices/my", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getMyDevices(final @RequestHeader("Authorization") String authHeader) {
+        LOGGER.debug("DevicesController getMyDevices, from requestHeader: {}", authHeader);
+        long userId = jwtTokenService.getUserIdFromAuthHeader(authHeader);
+        return
+                ResponseEntity
+                        .ok()
+                        .body(devicesService.getMyDevices(userId));
+    }
 }
