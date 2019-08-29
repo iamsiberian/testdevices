@@ -12,6 +12,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.mapping.FetchType;
 
 import java.util.List;
@@ -62,7 +63,7 @@ public interface DeviceMapper {
     )
     Device getById(long id);
 
-    @Delete(
+    @Update(
             "UPDATE devices SET is_deleted = TRUE WHERE id = #{id}"
     )
     Integer deleteById(long id);
