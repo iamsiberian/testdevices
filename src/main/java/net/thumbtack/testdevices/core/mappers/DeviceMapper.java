@@ -35,11 +35,10 @@ public interface DeviceMapper {
             "<script>",
             "SELECT d.id, d.type, d.owner, d.model, d.os_type AS osType, d.description\n" +
             "FROM devices d \n" +
-            "<where>" +
+            "where d.is_deleted = FALSE " +
                 "<if test='search != null'> " +
-                    "(LOWER(CONCAT_WS(' ', d.owner, d.model, d.os_type)) LIKE LOWER(#{search})) \n" +
+                    "AND (LOWER(CONCAT_WS(' ', d.owner, d.model, d.os_type)) LIKE LOWER(#{search})) \n" +
                 "</if>" +
-            "</where>" +
             "ORDER BY d.type, d.owner, d.model, d.os_type " +
             "</script>"
     })
@@ -58,12 +57,13 @@ public interface DeviceMapper {
     @Select(
             "SELECT d.id, d.type, d.owner, d.model, d.os_type AS osType, d.description\n" +
             "FROM devices d\n" +
-            "WHERE d.id = #{id}"
+            "WHERE d.id = #{id} " +
+            "AND d.is_deleted = FALSE"
     )
     Device getById(long id);
 
     @Delete(
-            "DELETE FROM devices WHERE id = #{id}"
+            "UPDATE devices SET is_deleted = TRUE WHERE id = #{id}"
     )
     Integer deleteById(long id);
 
